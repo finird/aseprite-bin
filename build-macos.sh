@@ -33,11 +33,12 @@ git -C aseprite reset --hard "origin/$ASEPRITE_VERSION"
 git -C aseprite submodule update --init --recursive
 
 python3 <<PY
+import os
 from pathlib import Path
 
 path = Path("aseprite/src/ver/CMakeLists.txt")
 content = path.read_text()
-path.write_text(content.replace("1.x-dev", "${ASEPRITE_VERSION}"[1:]))
+path.write_text(content.replace("1.x-dev", os.environ["ASEPRITE_VERSION"][1:]))
 PY
 
 if [ -f aseprite/laf/misc/skia-tag.txt ]; then
