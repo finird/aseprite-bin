@@ -1,4 +1,4 @@
-[Aseprite][] binary build for 64-bit Windows and macOS.
+[Aseprite][] binary build for 64-bit Windows.
 
 Step by step guide to build binaries for latest version:
 
