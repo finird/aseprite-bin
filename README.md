@@ -13,7 +13,7 @@ Step by step guide to build binaries for latest version:
 
 # 3. Open OS-specific workflow (`aseprite` for Windows or `aseprite MacOS`), and click `Run workflow`
 
-Optionally specify which version of Asprite to build (e.g. v1.3.10) in text field.
+Optionally specify which version of Aseprite to build (e.g. v1.3.10) in text field.
 Leave it empty to build latest released version.
 See list of available Aseprite versions [here][versions].
 
