@@ -28,7 +28,7 @@ echo "building $ASEPRITE_VERSION"
 
 git -C aseprite clean -fdx
 git -C aseprite submodule foreach --recursive git clean -xfd
-git -C aseprite fetch --depth=1 --no-tags origin "$ASEPRITE_VERSION":"refs/remotes/origin/$ASEPRITE_VERSION"
+git -C aseprite fetch --depth=1 --no-tags origin "${ASEPRITE_VERSION}:refs/remotes/origin/${ASEPRITE_VERSION}"
 git -C aseprite reset --hard "origin/$ASEPRITE_VERSION"
 git -C aseprite submodule update --init --recursive
 
@@ -44,6 +44,8 @@ PY
 if [ -f aseprite/laf/misc/skia-tag.txt ]; then
   SKIA_VERSION="$(cat aseprite/laf/misc/skia-tag.txt)"
 else
+  # Fallback versions match current logic in build.cmd for older tags
+  # where aseprite/laf/misc/skia-tag.txt is not available.
   if [[ "$ASEPRITE_VERSION" == *beta* ]]; then
     SKIA_VERSION="m124-08a5439a6b"
   else
