@@ -8,8 +8,11 @@ on:
         description: "Version to build, leave empty for latest"
         required: false
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  build-windows:
     runs-on: windows-2025
     steps:
 
@@ -26,6 +29,26 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v4
         with:
-          name: aseprite-${{ steps.build.outputs.ASEPRITE_VERSION }}
+          name: aseprite-windows-${{ steps.build.outputs.ASEPRITE_VERSION }}
+          path: github
+          if-no-files-found: error
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        id: build
+        run: bash build-macos.sh
+        env:
+          ASEPRITE_VERSION: ${{ github.event.inputs.version }}
+
+      - name: Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: aseprite-macos-${{ steps.build.outputs.ASEPRITE_VERSION }}
           path: github
           if-no-files-found: error
