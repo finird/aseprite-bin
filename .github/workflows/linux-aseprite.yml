@@ -1,0 +1,59 @@
+name: aseprite Linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build, leave empty for latest"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm \
+            base-devel \
+            git \
+            cmake \
+            ninja \
+            python \
+            curl \
+            unzip \
+            libx11 \
+            libxcursor \
+            libxrandr \
+            libxi \
+            mesa \
+            libgl \
+            freetype2 \
+            fontconfig \
+            libpng \
+            harfbuzz \
+            tinyxml \
+            pixman
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        id: build
+        shell: bash
+        run: ./build-linux.sh
+        env:
+          ASEPRITE_VERSION: ${{ github.event.inputs.version }}
+
+      - name: Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: aseprite-${{ steps.build.outputs.ASEPRITE_VERSION }}
+          path: github
+          if-no-files-found: error
