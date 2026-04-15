@@ -32,7 +32,13 @@ git -C aseprite fetch --depth=1 --no-tags origin "$ASEPRITE_VERSION":"refs/remot
 git -C aseprite reset --hard "origin/$ASEPRITE_VERSION"
 git -C aseprite submodule update --init --recursive
 
-python3 -c "v = open('aseprite/src/ver/CMakeLists.txt').read(); open('aseprite/src/ver/CMakeLists.txt', 'w').write(v.replace('1.x-dev', '$ASEPRITE_VERSION'[1:]))"
+python3 <<PY
+from pathlib import Path
+
+path = Path("aseprite/src/ver/CMakeLists.txt")
+content = path.read_text()
+path.write_text(content.replace("1.x-dev", "${ASEPRITE_VERSION}"[1:]))
+PY
 
 if [ -f aseprite/laf/misc/skia-tag.txt ]; then
   SKIA_VERSION="$(cat aseprite/laf/misc/skia-tag.txt)"
@@ -47,7 +53,10 @@ fi
 if [ ! -d "skia-$SKIA_VERSION" ]; then
   mkdir -p "skia-$SKIA_VERSION"
   pushd "skia-$SKIA_VERSION" >/dev/null
-  curl -fsSLO "https://github.com/aseprite/skia/releases/download/$SKIA_VERSION/Skia-macOS-Release-x64.zip"
+  curl -fL -o "Skia-macOS-Release-x64.zip" "https://github.com/aseprite/skia/releases/download/$SKIA_VERSION/Skia-macOS-Release-x64.zip" || {
+    echo "ERROR: failed to download Skia archive for $SKIA_VERSION"
+    exit 1
+  }
   unzip -q "Skia-macOS-Release-x64.zip"
   popd >/dev/null
 fi
